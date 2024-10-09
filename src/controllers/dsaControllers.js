@@ -2,13 +2,14 @@ import { Dsa } from "../models/dsamodel.js";
 
 // Adding a DSA problem
 const addDsaProblem = async (req, res) => {
-  console.log(req.body)
+  console.log(req.body);
   const {
     questionName,
     platform,
     link,
     solutionVideoLink,
     solutionArticleLink,
+    complexity,
     complexityTags,
     companyTags,
     dataStructureTags,
@@ -20,7 +21,9 @@ const addDsaProblem = async (req, res) => {
     // Check if the question already exists
     let dsaProblem = await Dsa.findOne({ questionName });
     if (dsaProblem) {
-      return res.status(400).json({ msg: `Question "${questionName}" already exists.` });
+      return res
+        .status(400)
+        .json({ msg: `Question "${questionName}" already exists.` });
     }
 
     // Create a new DSA problem instance
@@ -30,9 +33,10 @@ const addDsaProblem = async (req, res) => {
       link,
       solutionVideoLink,
       solutionArticleLink,
+      complexity,
       complexityTags,
       companyTags,
-      dataStructureTags, 
+      dataStructureTags,
       lists, // Added lists
       description, // Added description
     });
@@ -46,42 +50,54 @@ const addDsaProblem = async (req, res) => {
   }
 };
 
-
 // Get all DSA problems
 const getAllProblems = async (req, res) => {
-  console.log(req.query)
-  const {
-    page = 1,
-    limit = 10, 
-    filter = {},
-    search = "",   
-  } = req.query;
- 
-  if(filter.list){
-    const listquery={lists:{$in:[filter.list]}}
+  const { page = 1, limit = 10, filter = {}, search = "" } = req.query;
+  if (filter == "") {
+    filter = {};
   }
-  const query = {    
-    ...listquery, 
-    questionName: { $regex: search, $options: "i" }, 
+  const filterObj = JSON.parse(filter);
+  let listquery = {};
+  let dsquery = {};
+  let compquery = {};
+  let diffquery = {};
+  
+  if (filterObj.Difficulty != "") {
+    diffquery = { companyTags: { $in: filterObj.Difficulty } };
+  }
+  if (filterObj.Company != "") {
+   
+    compquery = { companyTags: { $in: filterObj.Company } };
+  }
+  if (filterObj.datastructure != "") {
+    dsquery = { dataStructureTags: { $in: filterObj.datastructure } };
+  }
+  if (filterObj.list != "") {
+    listquery = { lists: { $in: `${filterObj.list}` } };
+  }
+  const query = {
+    ...compquery,
+    ...listquery,
+    ...dsquery,
+    ...diffquery,
+    questionName: { $regex: search, $options: "i" },
   };
 
-
-
+  console.log("queryyy", query);
   // Calculate pagination parameters
-  const skip = (page - 1) * limit;
+  const skip = (page - 1) * limit;   
 
   try {
-    console.log(req.query)
+    console.log(req.query);
     const total = await Dsa.countDocuments(query); // Get total documents for pagination
-    const problems = await Dsa.find(query).skip(skip).limit(limit);
+    const problems = await Dsa.find(query).populate('DataStructureTags').populate('CompanyTags').skip(skip).limit(limit);
     const totalPages = Math.ceil(total / limit);
 
     res.status(200).json({ problems, totalPages });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ msg: "Internal server error" });   
+    res.status(500).json({ msg: "Internal server error" });
   }
 };
 
 export { getAllProblems, addDsaProblem };
-            

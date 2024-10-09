@@ -8,6 +8,7 @@ import { solutionRouter } from "./routes/solutionRoutes.js";
 import cors from 'cors'
 import { adminRemarkRouter } from "./routes/adminRemark.js";
 import { listTagRouter } from "./routes/ListsTags.js";
+import { addRouter } from "./routes/addRouter.js";
 
 
 const app = express();
@@ -37,6 +38,8 @@ app.use('/api/remark',adminRemarkRouter)
 
 //lists and tags
 app.use('/api/create',listTagRouter)
+
+app.use('/api/add',addRouter)
 app.get('/api',(req,res)=>{
     res.status(200).json({msg:"hi user"}) 
 })

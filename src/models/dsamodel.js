@@ -1,5 +1,4 @@
-import { mongoose, Schema,Types } from "mongoose";
-
+import { mongoose, Schema, Types } from "mongoose";
 
 const dsaSchema = new Schema(
   {
@@ -28,35 +27,44 @@ const dsaSchema = new Schema(
     },
     intop: {
       type: Boolean,
-      default: false // Whether the question is in the top questions
+      default: false, // Whether the question is in the top questions
     },
-    lists: [{
-      type: Types.ObjectId,
-      ref: 'List' // Array of List schema references
-    }],
-    dataStructureTags: [{
-      type: Types.ObjectId,
-      ref: 'DataStructureTag' // Reference to DataStructureTag schema
-    }],
-    companyTags: [{
-      type: Types.ObjectId,
-      ref: 'CompanyTag' // Reference to CompanyTag schema
-    }],
+    lists: [
+      {
+        type: Types.ObjectId,
+        ref: "List", // Array of List schema references
+      },
+    ],
+    dataStructureTags: [
+      {
+        type: Types.ObjectId,
+        ref: "DataStructureTag", // Reference to DataStructureTag schema
+      },
+    ],
+    companyTags: [
+      {
+        type: Types.ObjectId,
+        ref: "CompanyTag", // Reference to CompanyTag schema
+      },
+    ],
     complexityTags: {
       type: Types.ObjectId,
-      ref: 'DifficultyTag', // Reference to DifficultyTag schema
-      required: true // Difficulty is mandatory
+      ref: "DifficultTags", // Reference to DifficultyTag schema
+      required: true, // Difficulty is mandatory
     },
-    platformTags: [{
-      type: Types.ObjectId,
-      ref: 'PlatformTag' // Reference to PlatformTag schema
-    }],
-    lists: [{
-      type: Schema.Types.ObjectId,
-      ref: 'List' ,
-      required:false
-    }]
-  
+    platformTags: [
+      {
+        type: Types.ObjectId,
+        ref: "PlatformTag", // Reference to PlatformTag schema
+      },
+    ],
+    lists: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "List",
+        required: false,
+      },
+    ],
   },
   { timestamps: true }
 );

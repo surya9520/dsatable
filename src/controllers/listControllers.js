@@ -5,7 +5,6 @@ import { getuser } from "../utils/jwt.js";
 
 const createList=async (req,res)=>{
     const token=req.cookies?.uid;
-    console.log(token)
     const {listname}=req.body;
     try{
         if(token){
